@@ -20,6 +20,7 @@ sql string
 */
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.InteropServices;
 using Microsoft.Data.SqlClient;
 class DBController
 {
@@ -32,41 +33,41 @@ class DBController
     }
     public static void CreateTables(SqlConnection connection)
     {
-    String  createFlashCardsTable =   @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+        String  createFlashCardsTable = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+                                        WHERE TABLE_SCHEMA = 'dbo'
+                                        AND TABLE_NAME = 'FlashCards')
+                                        BEGIN
+                                        CREATE TABLE FlashCards (
+                                        ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+                                        Name varchar(255),
+                                        StackId int)
+                                        END;
+                                        ";
+        string createStacksTable = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
                                     WHERE TABLE_SCHEMA = 'dbo'
-                                    AND TABLE_NAME = 'FlashCards')
-                                    BEGIN
-                                    CREATE TABLE FlashCards (
+                                    AND TABLE_NAME = 'Stacks')
+                                    CREATE TABLE Stacks (
                                     ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-                                    Name varchar(255),
-                                    StackId int)
-                                    END;
-                                    ";
-    string createStacksTable = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
-                                WHERE TABLE_SCHEMA = 'dbo'
-                                AND TABLE_NAME = 'Stacks')
-                                CREATE TABLE Stacks (
-                                ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-                                Name varchar(255));";
-    string createSessionsTable = @"IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
-                                WHERE TABLE_SCHEMA = 'dbo'
-                                AND TABLE_NAME = 'Sessions'))
-                                CREATE TABLE Sessions (
-                                ID Int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-                                DateTime varchar(255),
-                                Stack varchar(255),
-                                Score DECIMAL(2,2 ));";
-    using (connection)
-    {
-    connection.Open();
-    SqlCommand command = new SqlCommand(createFlashCardsTable,  connection);
-    command.ExecuteNonQuery();
-    command.CommandText = createStacksTable;
-    command.ExecuteNonQuery();
-    command.CommandText = createSessionsTable;
-    command.ExecuteNonQuery();
-    connection.Close();
-    }
+                                    Name varchar(255));";
+        string createSessionsTable = @"IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+                                    WHERE TABLE_SCHEMA = 'dbo'
+                                    AND TABLE_NAME = 'Sessions'))
+                                    CREATE TABLE Sessions (
+                                    ID Int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+                                    DateTime varchar(255),
+                                    Stack varchar(255),
+                                    Score DECIMAL(2,2 ));";
+        using (connection)
+        {
+            connection.Open();
+            SqlCommand command = new SqlCommand(createFlashCardsTable,  connection);
+            command.ExecuteNonQuery();
+            command.CommandText = createStacksTable;
+            command.ExecuteNonQuery();
+            command.CommandText = createSessionsTable;
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
     }
     public static List<string> ViewTable(string table)
     {
@@ -90,10 +91,23 @@ class DBController
         SqlCommand command = new SqlCommand(sqlString, connection);
         using (command)
         {
+            command.Parameters.AddWithValue("Name", Name);
+            command.Parameters.AddWithValue("Definition", Definition);
             command.ExecuteNonQuery();
         }
     }
-
+    public static void InsertStack(SqlConnection connection, string Name)
+    {
+        String sqlString = @"INSERT INTO Stacks (Name)
+                            VALUES (@Name);";
+        connection.Open();
+        SqlCommand command  =  new SqlCommand(sqlString,  connection);
+        using (command)
+        {
+            command.Parameters.AddWithValue("Name",Name);
+            command.ExecuteNonQuery();
+        }
+    }
     public static List<String> QueryStacks(SqlConnection Connection)
     {
         List<String> stacks = [];
