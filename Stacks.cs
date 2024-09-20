@@ -1,4 +1,4 @@
-class stacks
+class Stacks
 {
     private string _name="";
     public string Name

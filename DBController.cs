@@ -19,6 +19,7 @@ sql string
 
 */
 using System.Data;
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Data.SqlClient;
 class DBController
 {
@@ -67,9 +68,11 @@ class DBController
     connection.Close();
     }
     }
-    public static string ViewTable(string table)
+    public static List<string> ViewTable(string table)
     {
-        return "A";
+        List<string> aaaa =[];
+        string ViewflashCards = @"";
+        return aaaa;
     }
     public static void UpdateRecord()
     {
@@ -79,19 +82,32 @@ class DBController
     {
 
     }
-    public static void InsertRecord(string table, )
+    public static void InsertFlashCard(SqlConnection connection, string Name, string Definition)
     {
-        switch (table)
+        string  sqlString = @"INSERT INTO FlashCards (Name, Definition) 
+                            VALUES (@Name, @Definition)";
+        connection.Open();
+        SqlCommand command = new SqlCommand(sqlString, connection);
+        using (command)
         {
-            case "FlashCards":
-            string?insertSqlString = "a";
-                break;
-            case "Stacks":
-                break;
-            case "Sessions":
-                break;
-            default:
-                break;
+            command.ExecuteNonQuery();
         }
+    }
+
+    public static List<String> QueryStacks(SqlConnection Connection)
+    {
+        List<String> stacks = [];
+        string stackString = @"SELECT 'Name' FROM Stacks";
+        Connection.Open();
+        SqlCommand command = new SqlCommand(stackString, Connection);
+        using (SqlDataReader reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                stacks.Add(reader[0].ToString().ToUpper().Trim());
+            }
+        }
+        Connection.Close();
+        return stacks;
     }
 }
