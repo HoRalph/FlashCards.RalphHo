@@ -8,10 +8,12 @@ public class Validation
         if (stackList.Contains(Stack.ToUpper().Trim()))
         {
             return true;
+            Console.WriteLine("True");
         }
         else
         {
             return false;
+            Console.WriteLine("False");
         }
     }
 }

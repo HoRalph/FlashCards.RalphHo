@@ -25,11 +25,6 @@ class Program
             break;
     }
     Console.ReadLine();
-    
-    Console.ReadLine();
-
-
-
     }
 }
 

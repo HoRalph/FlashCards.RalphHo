@@ -40,6 +40,7 @@ class DBController
                                         CREATE TABLE FlashCards (
                                         ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
                                         Name varchar(255),
+                                        Definition varchar(255),
                                         StackId int)
                                         END;
                                         ";
@@ -83,16 +84,17 @@ class DBController
     {
 
     }
-    public static void InsertFlashCard(SqlConnection connection, string Name, string Definition)
+    public static void InsertFlashCard(SqlConnection connection, string Name, string Definition, int StackID)
     {
-        string  sqlString = @"INSERT INTO FlashCards (Name, Definition) 
-                            VALUES (@Name, @Definition)";
+        string  sqlString = @"INSERT INTO FlashCards (Name, Definition, StackId) 
+                            VALUES (@Name, @Definition, @StackId)";
         connection.Open();
         SqlCommand command = new SqlCommand(sqlString, connection);
         using (command)
         {
             command.Parameters.AddWithValue("Name", Name);
             command.Parameters.AddWithValue("Definition", Definition);
+            command.Parameters.AddWithValue("StackId", StackID);
             command.ExecuteNonQuery();
         }
     }
@@ -111,7 +113,7 @@ class DBController
     public static List<String> QueryStacks(SqlConnection Connection)
     {
         List<String> stacks = [];
-        string stackString = @"SELECT 'Name' FROM Stacks";
+        string stackString = @"SELECT Name FROM Stacks";
         Connection.Open();
         SqlCommand command = new SqlCommand(stackString, Connection);
         using (SqlDataReader reader = command.ExecuteReader())
@@ -123,5 +125,20 @@ class DBController
         }
         Connection.Close();
         return stacks;
+    }
+    public static int QueryStackID(SqlConnection connection, string Name)
+    {
+        string sqlString = @"SELECT ID FROM Stacks WHERE Name = @Name;";
+        SqlCommand command = new SqlCommand(sqlString, connection);
+        command.Parameters.AddWithValue("Name", Name);
+        connection.Open();
+        using (SqlDataReader reader = command.ExecuteReader() )
+        {
+            while (reader.Read())
+            {
+                return (int)reader[0];
+            }
+        }
+        return 0;
     }
 }

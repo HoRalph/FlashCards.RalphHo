@@ -1,6 +1,3 @@
-using System.Data.Common;
-using Spectre.Console.Rendering;
-
 class UserInput
 {
     
@@ -58,6 +55,22 @@ class UserInput
         Console.WriteLine("E to Edit a Flashcard");
         Console.WriteLine("D to Delete a Flashcard");
         Console.WriteLine("---------------------------");
+
+        string result = Console.ReadLine().ToUpper().Trim();
+        switch (result)
+        {
+            case "V":
+                break;
+            case "C":
+                CreateFlashCard();
+                break;
+            case "E":
+                break;
+            case "D":
+                break;
+            default:
+                break;
+        }
     }
     public  static void StudyMenu()
     {
@@ -81,14 +94,17 @@ class UserInput
             switch (result)
             {
                 case "Y":
-                    //create stack.
+                    DBController.InsertStack(DBController.ConnectDB(),stackName);
                     break;
                 default:
                     Console.WriteLine("Enter the stack name this Flashcard  belongs to.");
                     stackName = Console.ReadLine();
                     break;
             }
+
         }
+        int stackID = DBController.QueryStackID(DBController.ConnectDB(),stackName);
+        DBController.InsertFlashCard(DBController.ConnectDB(),flashcardName,definition,stackID);
         return [flashcardName, definition, stackName];
     }
 }
