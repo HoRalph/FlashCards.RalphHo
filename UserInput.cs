@@ -1,3 +1,6 @@
+using System.Security.Cryptography;
+using Microsoft.Data.SqlClient;
+
 class UserInput
 {
     
@@ -65,6 +68,7 @@ class UserInput
                 CreateFlashCard();
                 break;
             case "E":
+                UpdateFlashCard();
                 break;
             case "D":
                 break;
@@ -101,10 +105,54 @@ class UserInput
                     stackName = Console.ReadLine();
                     break;
             }
-
         }
         int stackID = DBController.QueryStackID(DBController.ConnectDB(),stackName);
         DBController.InsertFlashCard(DBController.ConnectDB(),flashcardName,definition,stackID);
         return [flashcardName, definition, stackName];
+    }
+    public static void UpdateFlashCard()
+    {
+        //view all flash cards
+
+        Console.WriteLine("Enter the ID of the Flashcard you want to edit");
+        int flashcardIDInt = 0;
+        while (true)
+        {
+            string flashcardID = Console.ReadLine();
+            bool validID = int.TryParse(flashcardID, out flashcardIDInt);
+            if (validID)
+            {
+                break;
+            }
+        }
+        Console.WriteLine("Enter the new Flashcard name");
+        string name = Console.ReadLine();
+        Console.WriteLine("Enter the new Flashcard definition");
+        string definition = Console.ReadLine();
+        Console.WriteLine("Enter the new stack");
+        string stackName = "";
+        SqlConnection connection = DBController.ConnectDB();
+        while(true)
+        {
+            stackName = Console.ReadLine();
+            if (Validation.StackExists(stackName))
+            {
+                break;
+            }
+            else
+            {
+                Console.WriteLine("This stack does not exist. Do you want to create this?");
+                {
+                    if (Console.ReadLine().ToUpper().Trim()=="Y")
+                    {
+                        DBController.InsertStack(connection, stackName);
+                    }
+                    else
+                        Console.WriteLine("Please enter a valid stack.");
+                }
+            }
+        }
+        int stackID = DBController.QueryStackID(connection,stackName);
+        DBController.UpdateFlashCard(connection,flashcardIDInt,name,definition, stackID);
     }
 }

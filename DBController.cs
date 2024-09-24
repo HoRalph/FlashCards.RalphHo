@@ -76,14 +76,33 @@ class DBController
         string ViewflashCards = @"";
         return aaaa;
     }
-    public static void UpdateRecord()
+    public static void UpdateFlashCard(SqlConnection connection, int Id, string Name, String Definition, int StackID)
+    {
+        string sqlString = @"UPDATE FlashCards (Name, Definition, StackID)
+                            VALUES (@Name, @Definition, @StackID) WHERE ID = @Id;";
+        connection.Open();
+        SqlCommand command = new SqlCommand(sqlString, connection);
+        using (command)
+        {
+            command.Parameters.AddWithValue("Id", Id);
+            command.Parameters.AddWithValue("Name", Name);
+            command.Parameters.AddWithValue("Definition", Definition);
+            command.Parameters.AddWithValue("StackID", StackID);
+            command.ExecuteNonQuery();
+        }
+    }
+    public static void UpdateStack()
     {
 
     }
-    public static void DeleteRecord()
+    public static void DeleteFlashCard()
     {
 
     }
+    public static void DeleteStack()
+    {
+
+    }    
     public static void InsertFlashCard(SqlConnection connection, string Name, string Definition, int StackID)
     {
         string  sqlString = @"INSERT INTO FlashCards (Name, Definition, StackId) 
