@@ -1,3 +1,4 @@
+using System.Data.Common;
 using System.Security.Cryptography;
 using Microsoft.Data.SqlClient;
 
@@ -63,6 +64,7 @@ class UserInput
         switch (result)
         {
             case "V":
+                DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
                 break;
             case "C":
                 CreateFlashCard();
@@ -71,6 +73,7 @@ class UserInput
                 UpdateFlashCard();
                 break;
             case "D":
+                DeleteFlashCard();
                 break;
             default:
                 break;
@@ -154,5 +157,20 @@ class UserInput
         }
         int stackID = DBController.QueryStackID(connection,stackName);
         DBController.UpdateFlashCard(connection,flashcardIDInt,name,definition, stackID);
+    }
+    public static void DeleteFlashCard()
+    {
+        //  view all flash cards
+        int flashcardID = 0;
+        while (true)
+        {
+            Console.WriteLine("Enter the ID of the flashcard to delete");
+            bool validInt = int.TryParse(Console.ReadLine(), out flashcardID);
+            if (validInt)
+                {
+                    break;
+                }
+        }
+        DBController.DeleteFlashCard(DBController.ConnectDB(), flashcardID);
     }
 }

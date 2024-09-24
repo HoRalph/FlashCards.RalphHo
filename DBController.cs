@@ -18,10 +18,10 @@ crate table
 sql string
 
 */
-using System.Data;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices;
 using Microsoft.Data.SqlClient;
+using Spectre;
+using Spectre.Console;
+
 class DBController
 {
     public static SqlConnection ConnectDB()
@@ -70,11 +70,41 @@ class DBController
             connection.Close();
         }
     }
-    public static List<string> ViewTable(string table)
+    public static void ViewTable(SqlConnection connection,string tableName)
     {
-        List<string> aaaa =[];
-        string ViewflashCards = @"";
-        return aaaa;
+        string sqlString = @$"SELECT * FROM {tableName};";
+        SqlCommand command = new SqlCommand(sqlString, connection);
+        
+        connection.Open();
+        var table = new Table();
+        List<string[]> flashcardRow = new List<string[]>();
+        string[][] stackRow = new string[3][];
+        using(SqlDataReader reader = command.ExecuteReader())
+        {
+            switch (tableName)
+            {
+                case "FlashCards":
+                    table.AddColumn("ID");
+                    table.AddColumn("Name");
+                    table.AddColumn("StackId");
+                    table.AddColumn("Definition");
+                    int rowCount = 0;
+                    while (reader.Read())
+                    {
+                        flashcardRow.Add([reader[0].ToString(), reader[1].ToString(), reader[2].ToString()  , reader[3].ToString() ]);
+                        table.AddRow([reader[0].ToString(), reader[1].ToString(), reader[2].ToString()  , reader[3].ToString() ]);
+                    }
+                    rowCount  = 0;
+                    break;
+                case "stacks":
+                    break;
+                default:
+                    break;
+            }
+        }
+        connection.Close();
+        
+        AnsiConsole.Write(table);        
     }
     public static void UpdateFlashCard(SqlConnection connection, int Id, string Name, String Definition, int StackID)
     {
@@ -95,9 +125,15 @@ class DBController
     {
 
     }
-    public static void DeleteFlashCard()
+    public static void DeleteFlashCard(SqlConnection connection, int ID)
     {
-
+        string sqlString = @"DELETE FROM Flashcards WHERE ID = @ID;";
+        connection.Open();
+        using (SqlCommand command = new SqlCommand(sqlString,connection) )
+        {
+            command.Parameters.AddWithValue("ID", ID);
+            command.ExecuteNonQuery();
+        }
     }
     public static void DeleteStack()
     {
