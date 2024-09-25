@@ -94,16 +94,21 @@ class DBController
                         flashcardRow.Add([reader[0].ToString(), reader[1].ToString(), reader[2].ToString()  , reader[3].ToString() ]);
                         table.AddRow([reader[0].ToString(), reader[1].ToString(), reader[2].ToString()  , reader[3].ToString() ]);
                     }
-                    rowCount  = 0;
                     break;
-                case "stacks":
+                case "Stacks":
+                    table.AddColumn("ID");
+                    table.AddColumn("Name");
+                    rowCount = 0;
+                    while (reader.Read())
+                    {
+                        table.AddRow([reader[0].ToString(),reader[1].ToString()]);
+                    }
                     break;
                 default:
                     break;
             }
         }
         connection.Close();
-        
         AnsiConsole.Write(table);        
     }
     public static void UpdateFlashCard(SqlConnection connection, int Id, string Name, String Definition, int StackID)

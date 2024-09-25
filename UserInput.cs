@@ -65,6 +65,8 @@ class UserInput
         {
             case "V":
                 DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
+                Console.WriteLine();
+                DBController.ViewTable(DBController.ConnectDB(), "Stacks");
                 break;
             case "C":
                 CreateFlashCard();
