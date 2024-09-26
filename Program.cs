@@ -14,9 +14,10 @@ class Program
         case "0":
             return;
         case "1":
+            Console.WriteLine("Enter the stack name");
             selectedStack = Console.ReadLine();
             DBController.QueryStacks(DBController.ConnectDB());
-            UserInput.StackMenu();        
+            UserInput.StackMenu(selectedStack);        
             break;
         case "2":
             UserInput.FlashCardMenu();

@@ -201,4 +201,28 @@ class DBController
         }
         return 0;
     }
+    public static void ViewFlashcardsInStack(SqlConnection Connection, string Stack)
+    {
+        string sqlString = @"SELECT FlashCards.ID, FlashCards.Name, FlashCards.Definition, Stacks.Name
+                            FROM FlashCards
+                             LEFT JOIN Stacks ON FlashCards.StackID = Stacks.ID 
+                             WHERE Stacks.Name = @Stack;";
+        Connection.Open();
+        Table table = new Table();
+        table.AddColumn("ID");
+        table.AddColumn("Name");
+        table.AddColumn("Definition");
+        table.AddColumn("Stack Name");
+        using(SqlCommand command = new SqlCommand(sqlString, Connection))
+        {
+            command.Parameters.AddWithValue("Stack", Stack);
+            SqlDataReader reader = command.ExecuteReader();
+            while(reader.Read())
+            {
+                table.AddRow([reader[0].ToString(), reader[1].ToString(), reader[2].ToString(), reader[3].ToString()]);
+            }
+        }
+        Connection.Close();
+        AnsiConsole.Write(table);
+    }
 }

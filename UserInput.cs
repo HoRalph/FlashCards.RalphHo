@@ -1,5 +1,4 @@
-using System.Data.Common;
-using System.Security.Cryptography;
+using System.Collections;
 using Microsoft.Data.SqlClient;
 
 class UserInput
@@ -39,7 +38,7 @@ class UserInput
         }
         return "0";
     }
-    public static  void StackMenu()
+    public static  void StackMenu(string Stack)
     {
         Console.WriteLine("---------------------------");
         Console.WriteLine("0 to return to main menu");
@@ -49,7 +48,31 @@ class UserInput
         Console.WriteLine("C to Create a Flashcard in current stack");
         Console.WriteLine("E to Edit a Flashcard");
         Console.WriteLine("D to Delete a Flashcard");
-        Console.WriteLine("---------------------------");
+        
+        string result = Console.ReadLine().ToUpper().Trim();
+        switch (result)
+        {
+            case "0":
+                MainMenu();
+                break;
+            case "X":
+                Console.WriteLine("Please enter the new stack name");
+                StackMenu(Console.ReadLine());
+                break;
+            case "V":
+                DBController.ViewFlashcardsInStack(DBController.ConnectDB(), Stack);
+                break;
+            case "A":
+                break;
+            case "C":
+                break;
+            case "E":
+                break;
+            case "D":
+                break;
+            default:
+                break;
+        }
     }
     public  static void FlashCardMenu()
     {
@@ -118,7 +141,7 @@ class UserInput
     public static void UpdateFlashCard()
     {
         //view all flash cards
-
+        DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
         Console.WriteLine("Enter the ID of the Flashcard you want to edit");
         int flashcardIDInt = 0;
         while (true)
@@ -163,6 +186,7 @@ class UserInput
     public static void DeleteFlashCard()
     {
         //  view all flash cards
+        DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
         int flashcardID = 0;
         while (true)
         {
