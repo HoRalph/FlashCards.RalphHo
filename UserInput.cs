@@ -1,10 +1,11 @@
 using System.Collections;
+using System.Data.Common;
 using Microsoft.Data.SqlClient;
 
 class UserInput
 {
     
-    public static string MainMenu()
+    public static void MainMenu()
     {
         Console.WriteLine("---------------------------");
         Console.WriteLine( "0 Exit");
@@ -18,25 +19,31 @@ class UserInput
         {
           validInput = true;
           string result = Console.ReadLine();
+          string selectedStack ="";
           switch (result)
           {
             case "0":
-                return "0";
+                return;
             case "1":
-                return "1";
+                Console.WriteLine("Enter the stack name");
+                selectedStack = Console.ReadLine();
+                DBController.QueryStacks(DBController.ConnectDB());
+                UserInput.StackMenu(selectedStack);        
+                break;
             case "2":
-                return "2";
+                UserInput.FlashCardMenu();
+                break;
             case "3":
-                return "3";
+                break;
             case "4":
-                return "4";
+                break;
             default:
                 validInput = false;
                 Console.WriteLine("Invalid input. Please retry.");
                 break;
           }
         }
-        return "0";
+        return;
     }
     public static  void StackMenu(string Stack)
     {
@@ -50,6 +57,7 @@ class UserInput
         Console.WriteLine("D to Delete a Flashcard");
         
         string result = Console.ReadLine().ToUpper().Trim();
+        SqlConnection connection  = DBController.ConnectDB();
         switch (result)
         {
             case "0":
@@ -60,15 +68,59 @@ class UserInput
                 StackMenu(Console.ReadLine());
                 break;
             case "V":
-                DBController.ViewFlashcardsInStack(DBController.ConnectDB(), Stack);
+                DBController.ViewFlashcardsInStack(connection, Stack);
                 break;
             case "A":
+                
                 break;
             case "C":
+                string?flashcardName;
+                string?definition;
+                Console.WriteLine("Enter the name of the Flashcard");
+                flashcardName = Console.ReadLine();
+                Console.WriteLine("Enter the definition of the Flashcard");
+                definition = Console.ReadLine();
+                int stackID = DBController.QueryStackID(connection,Stack);
+                DBController.InsertFlashCard(DBController.ConnectDB(),flashcardName,definition,stackID);
                 break;
             case "E":
+                DBController.ViewFlashcardsInStack(connection, Stack);
+                Console.WriteLine("Enter the ID of the flashcard to edit.");
+                int ID = 0;
+                while(true)
+                {
+                    string inputID = Console.ReadLine();
+                    if (int.TryParse(inputID, out ID))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid ID format. Please renter.");
+                    }
+                }
+                Console.WriteLine("Enter the new Flashcard name");
+                string name = Console.ReadLine();
+                Console.WriteLine("Enter the new Flashcard definition");
+                string definition = Console.ReadLine();
+                DBController.UpdateFlashCard(connection, ID, name, definition,DBController.QueryStackID(connection,Stack));
                 break;
             case "D":
+                DBController.ViewFlashcardsInStack(connection, Stack);
+                Console.WriteLine("Enter the ID of the flashcard to delete.");
+                while(true)
+                {
+                    string inputID = Console.ReadLine();
+                    if (int.TryParse(inputID, out ID))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid ID format. Please renter.");
+                    }
+                }
+                DBController.DeleteFlashCard(connection, ID);
                 break;
             default:
                 break;
