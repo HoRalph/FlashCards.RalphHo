@@ -18,6 +18,7 @@ crate table
 sql string
 
 */
+using System.Data.SqlTypes;
 using Microsoft.Data.SqlClient;
 using Spectre;
 using Spectre.Console;
@@ -224,5 +225,39 @@ class DBController
         }
         Connection.Close();
         AnsiConsole.Write(table);
+    }
+    public static void XFlashcardsInStack(SqlConnection connection, string Stack, int cardNumber)
+    {
+        Random rand = new Random();
+        int i =0;
+        string idList = "(";
+        for (i = 0; i<=cardNumber;i++)
+        {
+            int j = rand.Next(1,countFlashCards(connection,Stack)+1);
+            idList = idList +", "+ j.ToString();
+        }
+        
+        string sqlString = @$"SELECT ID, Name, Definition FROM Flashcards WHERE Stacks.Name = @Stack AND Flashcards.ID IN {idList};";
+    }
+    public static int countFlashCards(SqlConnection connection, string Stack)
+    {
+        string sqlString = @"SELECT Count(FlashCards.ID) FROM Flashcards LEFT JOIN STACKS ON FlashCards.StackID = Stacks.ID WHERE Stacks.Name = @Stack;";
+        SqlCommand command = new SqlCommand(sqlString, connection);
+        connection.Open();
+        using(SqlDataReader reader = command.ExecuteReader())
+        {
+            while(reader.Read())
+            {
+                try
+                {
+                    return int.Parse(reader[0].ToString());
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+            return 0;
+        }
     }
 }
