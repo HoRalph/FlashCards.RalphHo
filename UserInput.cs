@@ -71,6 +71,27 @@ class UserInput
                 DBController.ViewFlashcardsInStack(connection, Stack);
                 break;
             case "A":
+                Console.WriteLine("Please enter the amount of cards you want to view.");
+                int cardNumber = 0;
+                connection = DBController.ConnectDB();
+                while(true)
+                {
+                    if(int.TryParse(Console.ReadLine(), out cardNumber))
+                    {
+                        if (cardNumber > DBController.countFlashCards(connection, Stack))
+                        {
+                            Console.WriteLine("Number entered is greater than the number of flashcards in this Stack. Please retry.");
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid number. Please retry.");
+                    }
+                }
                 
                 break;
             case "C":
@@ -102,7 +123,7 @@ class UserInput
                 Console.WriteLine("Enter the new Flashcard name");
                 string name = Console.ReadLine();
                 Console.WriteLine("Enter the new Flashcard definition");
-                string definition = Console.ReadLine();
+                definition = Console.ReadLine();
                 DBController.UpdateFlashCard(connection, ID, name, definition,DBController.QueryStackID(connection,Stack));
                 break;
             case "D":
