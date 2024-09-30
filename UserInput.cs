@@ -163,6 +163,7 @@ class UserInput
                 DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
                 Console.WriteLine();
                 DBController.ViewTable(DBController.ConnectDB(), "Stacks");
+                Console.ReadLine();
                 break;
             case "C":
                 CreateFlashCard();
