@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nGnBslQJ2Mo=",
+  "dgSpecHash": "x4qfRgJ8fx6Z8w0nc+qsfJn+3PSKeG/4EQ2bujSGSs/Z+3xwvPgpZhKvBnsHI29CJUnSiJAxdalj0VAlTt9vvw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Ralph\\.git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj",
+  "projectFilePath": "C:\\Users\\Ralph\\.vscode\\git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Ralph\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Ralph\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

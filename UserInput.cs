@@ -7,20 +7,20 @@ class UserInput
     
     public static void MainMenu()
     {
-        Console.WriteLine("---------------------------");
-        Console.WriteLine( "0 Exit");
-        Console.WriteLine( "1 Manage Stacks");
-        Console.WriteLine( "2 Manage FlashCards");
-        Console.WriteLine( "3 Study");
-        Console.WriteLine( "4 View Study session data");
-        Console.WriteLine("---------------------------");
        bool validInput = false; 
-        while (!validInput)
+        while (true)
         {
-          validInput = true;
-          string result = Console.ReadLine();
-          string selectedStack ="";
-          switch (result)
+            Console.WriteLine("---------------------------");
+            Console.WriteLine( "0 Exit");
+            Console.WriteLine( "1 Manage Stacks");
+            Console.WriteLine( "2 Manage FlashCards");
+            Console.WriteLine( "3 Study");
+            Console.WriteLine( "4 View Study session data");
+            Console.WriteLine("---------------------------");          
+            validInput = true;
+            string result = Console.ReadLine();
+            string selectedStack ="";
+            switch (result)
           {
             case "0":
                 return;
@@ -102,7 +102,7 @@ class UserInput
                 Console.WriteLine("Enter the new Flashcard name");
                 string name = Console.ReadLine();
                 Console.WriteLine("Enter the new Flashcard definition");
-                string definition = Console.ReadLine();
+                definition = Console.ReadLine();
                 DBController.UpdateFlashCard(connection, ID, name, definition,DBController.QueryStackID(connection,Stack));
                 break;
             case "D":

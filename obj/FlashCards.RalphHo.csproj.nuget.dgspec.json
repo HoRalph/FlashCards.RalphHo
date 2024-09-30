@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ralph\\.git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj": {}
+    "C:\\Users\\Ralph\\.vscode\\git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ralph\\.git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj": {
+    "C:\\Users\\Ralph\\.vscode\\git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ralph\\.git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj",
+        "projectUniqueName": "C:\\Users\\Ralph\\.vscode\\git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj",
         "projectName": "FlashCards.RalphHo",
-        "projectPath": "C:\\Users\\Ralph\\.git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj",
+        "projectPath": "C:\\Users\\Ralph\\.vscode\\git\\FlashCards.RalphHo\\FlashCards.RalphHo.csproj",
         "packagesPath": "C:\\Users\\Ralph\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ralph\\.git\\FlashCards.RalphHo\\obj\\",
+        "outputPath": "C:\\Users\\Ralph\\.vscode\\git\\FlashCards.RalphHo\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Ralph\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Ralph\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,11 +34,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -76,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
