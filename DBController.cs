@@ -200,7 +200,18 @@ class DBController
                 return (int)reader[0];
             }
         }
+        connection.Close();
         return 0;
+    }
+    public static void ViewStacks(List<string> StackList)
+    {
+        Table table = new Table();
+        table.AddColumn("Stack");
+        foreach (string stack in StackList)
+        {
+            table.AddRow(stack);
+        }
+        AnsiConsole.Write(table);
     }
     public static void ViewFlashcardsInStack(SqlConnection Connection, string Stack)
     {
@@ -230,34 +241,61 @@ class DBController
     {
         Random rand = new Random();
         int i =0;
-        string idList = "(";
-        for (i = 0; i<=cardNumber;i++)
+        string idList = "";
+        int flashcardCount = countFlashCards(connection,Stack);
+        for (i = 1; i<=cardNumber;i++)
         {
-            int j = rand.Next(1,countFlashCards(connection,Stack)+1);
-            idList = idList +", "+ j.ToString();
+            int j = rand.Next(1,flashcardCount+1);
+            idList = idList +  j.ToString();
+            if (i < cardNumber )
+            {
+                idList +=", ";
+            }
         }
-        
-        string sqlString = @$"SELECT ID, Name, Definition FROM Flashcards WHERE Stacks.Name = @Stack AND Flashcards.ID IN {idList};";
+        idList = $"({idList})"; 
+        string sqlString = @$"SELECT FlashCards.ID, FlashCards.Name, FlashCards.Definition FROM Flashcards LEFT JOIN Stacks ON FlashCards.StackID = Stacks.ID WHERE Stacks.Name = @Stack AND Flashcards.ID IN {idList};";
+        SqlCommand command = new SqlCommand(sqlString,connection);
+        connection.Open();
+        command.Parameters.AddWithValue("Stack", Stack);
+        Table table = new Table();
+        table.AddColumn("ID");
+        table.AddColumn("Name");
+        table.AddColumn("Definition");
+        using (SqlDataReader reader = command.ExecuteReader())
+        {
+            while(reader.Read())
+            {
+                table.AddRow([reader[0].ToString(), reader[1].ToString(), reader[2].ToString()]);
+            }
+        }
+        connection.Close();
+        AnsiConsole.Write(table);
     }
     public static int countFlashCards(SqlConnection connection, string Stack)
     {
         string sqlString = @"SELECT Count(FlashCards.ID) FROM Flashcards LEFT JOIN STACKS ON FlashCards.StackID = Stacks.ID WHERE Stacks.Name = @Stack;";
         SqlCommand command = new SqlCommand(sqlString, connection);
         connection.Open();
+        command.Parameters.AddWithValue("Stack", Stack);
         using(SqlDataReader reader = command.ExecuteReader())
         {
             while(reader.Read())
             {
                 try
                 {
-                    return int.Parse(reader[0].ToString());
+                    int count = int.Parse(reader[0].ToString());
+                    connection.Close();
+                    return count;
                 }
                 catch
                 {
+                    connection.Close();
                     return 0;
                 }
             }
+            connection.Close();
             return 0;
         }
+        
     }
 }

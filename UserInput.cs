@@ -25,10 +25,21 @@ class UserInput
             case "0":
                 return;
             case "1":
-                Console.WriteLine("Enter the stack name");
-                selectedStack = Console.ReadLine();
-                DBController.QueryStacks(DBController.ConnectDB());
-                UserInput.StackMenu(selectedStack);        
+                DBController.ViewStacks(DBController.QueryStacks(DBController.ConnectDB()));
+                while(true)
+                {
+                    Console.WriteLine("Enter the stack name to select");
+                    selectedStack = Console.ReadLine();
+                    if (Validation.StackExists(selectedStack))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Stack. PLease reenter.");
+                    }
+                }
+                UserInput.StackMenu(selectedStack);  
                 break;
             case "2":
                 UserInput.FlashCardMenu();
@@ -64,8 +75,21 @@ class UserInput
                 MainMenu();
                 break;
             case "X":
-                Console.WriteLine("Please enter the new stack name");
-                StackMenu(Console.ReadLine());
+                DBController.ViewStacks(DBController.QueryStacks(connection));
+                while(true)
+                {
+                    Console.WriteLine("Please enter the new stack name to select.");
+                    string stack = Console.ReadLine();
+                    if (Validation.StackExists(stack))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid stack please try again");
+                    }
+                }
+                StackMenu(Stack);
                 break;
             case "V":
                 DBController.ViewFlashcardsInStack(connection, Stack);
@@ -92,7 +116,7 @@ class UserInput
                         Console.WriteLine("Invalid number. Please retry.");
                     }
                 }
-                
+                DBController.XFlashcardsInStack(connection, Stack, cardNumber);
                 break;
             case "C":
                 string?flashcardName;
