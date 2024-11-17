@@ -44,7 +44,26 @@ class UserInput
             case "2":
                 UserInput.FlashCardMenu();
                 break;
-            case "3":
+            case "3"://study session
+                Console.Clear();
+                DBController.ViewStacks(DBController.QueryStacks(DBController.ConnectDB()));
+                Console.WriteLine();
+                Console.WriteLine("Enter a Stack to study.");
+                string stack = "";
+                while(true)
+                {
+                    stack = Console.ReadLine();
+                    if (Validation.StackExists(stack))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Stack. Please retry.");
+                    }
+                }
+                
+
                 break;
             case "4":
                 break;
@@ -58,7 +77,7 @@ class UserInput
     }
     public static  void StackMenu(string Stack)
     {
-        Console.WriteLine("---------------------------");
+        Console.WriteLine($"------ Current Stack: {Stack} ------");
         Console.WriteLine("0 to return to main menu");
         Console.WriteLine("X to change current stack");
         Console.WriteLine("V to view all Flashcards in stack");
