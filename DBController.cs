@@ -22,6 +22,7 @@ using System.Data.SqlTypes;
 using Microsoft.Data.SqlClient;
 using Spectre;
 using Spectre.Console;
+using Spectre.Console.Cli;
 
 class DBController
 {
@@ -145,10 +146,10 @@ class DBController
     {
 
     }    
-    public static void InsertFlashCard(SqlConnection connection, string Name, string Definition, int StackID)
+    public static int InsertFlashCard(SqlConnection connection, string Name, string Definition, int StackID)
     {
         string  sqlString = @"INSERT INTO FlashCards (Name, Definition, StackId) 
-                            VALUES (@Name, @Definition, @StackId)";
+                            VALUES (@Name, @Definition, @StackId); SELECT SCOPE_IDENTITY() AS INT";
         connection.Open();
         SqlCommand command = new SqlCommand(sqlString, connection);
         using (command)
@@ -156,19 +157,19 @@ class DBController
             command.Parameters.AddWithValue("Name", Name);
             command.Parameters.AddWithValue("Definition", Definition);
             command.Parameters.AddWithValue("StackId", StackID);
-            command.ExecuteNonQuery();
+            return Convert.ToInt32(command.ExecuteScalar());
         }
     }
-    public static void InsertStack(SqlConnection connection, string Name)
+    public static int InsertStack(SqlConnection connection, string Name)
     {
         String sqlString = @"INSERT INTO Stacks (Name)
-                            VALUES (@Name);";
+                            VALUES (@Name); SELECT SCOPE_IDENTITY() AS INT";
         connection.Open();
         SqlCommand command  =  new SqlCommand(sqlString,  connection);
         using (command)
         {
             command.Parameters.AddWithValue("Name",Name);
-            command.ExecuteNonQuery();
+            return Convert.ToInt32(command.ExecuteScalar());
         }
     }
     public static List<String> QueryStacks(SqlConnection Connection)
@@ -205,6 +206,7 @@ class DBController
     }
     public static void ViewStacks(List<string> StackList)
     {
+        Console.Clear();
         Table table = new Table();
         table.AddColumn("Stack");
         foreach (string stack in StackList)

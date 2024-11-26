@@ -1,7 +1,8 @@
-class FlashCard
+public class FlashCardModel
 {
     private string _name="";
     private string _definition="";
+    public int Id{get;set;}
     public string Name
     {
         get{return _name;}
@@ -12,4 +13,6 @@ class FlashCard
         get{return _definition;}
         set{_definition = value;}
     }
+
+    public int StackId{get;set;}
 }

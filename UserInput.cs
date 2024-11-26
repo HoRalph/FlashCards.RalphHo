@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Data.Common;
+using System.Runtime.InteropServices;
 using Microsoft.Data.SqlClient;
 
 class UserInput
@@ -30,7 +31,7 @@ class UserInput
                 {
                     Console.WriteLine("Enter the stack name to select");
                     selectedStack = Console.ReadLine();
-                    if (Validation.StackExists(selectedStack))
+                    if (Logic.StackExists(selectedStack))
                     {
                         break;
                     }
@@ -41,6 +42,7 @@ class UserInput
                 }
                 UserInput.StackMenu(selectedStack);  
                 break;
+            
             case "2":
                 UserInput.FlashCardMenu();
                 break;
@@ -53,7 +55,7 @@ class UserInput
                 while(true)
                 {
                     stack = Console.ReadLine();
-                    if (Validation.StackExists(stack))
+                    if (Logic.StackExists(stack))
                     {
                         break;
                     }
@@ -99,7 +101,7 @@ class UserInput
                 {
                     Console.WriteLine("Please enter the new stack name to select.");
                     string stack = Console.ReadLine();
-                    if (Validation.StackExists(stack))
+                    if (Logic.StackExists(stack))
                     {
                         break;
                     }
@@ -203,19 +205,60 @@ class UserInput
         switch (result)
         {
             case "V":
+                Console.Clear();
                 DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
                 Console.WriteLine();
                 DBController.ViewTable(DBController.ConnectDB(), "Stacks");
                 Console.ReadLine();
                 break;
             case "C":
-                CreateFlashCard();
+                Console.Clear();
+                //ask for Name, Definition, Stack
+                string?flashcardName;
+                string?definition;
+                string?stackName;
+                int stackID = 0;
+                Console.WriteLine("Enter the name of the Flashcard");
+                flashcardName = Console.ReadLine();
+                Console.WriteLine("Enter the definition of the Flashcard");
+                definition = Console.ReadLine();
+                Console.WriteLine("Enter the stack name this Flashcard  belongs to.");
+                stackName = Console.ReadLine();
+                //validate inputs
+                
+                //Check if Stack Exists If not save the stack
+                if (!Logic.StackExists(stackName))
+                {
+                    //if not exists save stack return stack ID
+                    Console.WriteLine("Stack does not exists. Create Stack? (Y/N)");
+
+                    if (Console.ReadLine().ToUpper().Trim() == "Y")
+                    {
+                        DBController.InsertStack(DBController.ConnectDB(),stackName);
+                        stackID = DBController.QueryStackID(DBController.ConnectDB(),stackName);
+                    }
+
+                    else 
+                        return;
+                }
+                
+                else
+                {
+                    //if exists get stack ID
+                    stackID = DBController.QueryStackID(DBController.ConnectDB(),stackName);
+                }
+
+                //Create Flash card
+                FlashCardModel flashCard = Logic.CreateFlashCard(flashcardName, definition,StackId:stackID);
+                //save to flash card table
+                Logic.SaveFlashCard(flashCard);
                 break;
+
             case "E":
-                UpdateFlashCard();
+                Logic.UpdateFlashCard();
                 break;
             case "D":
-                DeleteFlashCard();
+                Logic.DeleteFlashCard();
                 break;
             default:
                 break;
@@ -225,95 +268,5 @@ class UserInput
     {
         
     }
-    public static string[] CreateFlashCard()
-    {
-        string?flashcardName;
-        string?definition;
-        string?stackName;
-        Console.WriteLine("Enter the name of the Flashcard");
-        flashcardName = Console.ReadLine();
-        Console.WriteLine("Enter the definition of the Flashcard");
-        definition = Console.ReadLine();
-        Console.WriteLine("Enter the stack name this Flashcard  belongs to.");
-        stackName = Console.ReadLine();
-        while(!Validation.StackExists(stackName))
-        {
-            Console.WriteLine("Stack does not exists. Would you like to create this stack?(Y/N)");
-            string result = Console.ReadLine().ToUpper().Trim();
-            switch (result)
-            {
-                case "Y":
-                    DBController.InsertStack(DBController.ConnectDB(),stackName);
-                    break;
-                default:
-                    Console.WriteLine("Enter the stack name this Flashcard  belongs to.");
-                    stackName = Console.ReadLine();
-                    break;
-            }
-        }
-        int stackID = DBController.QueryStackID(DBController.ConnectDB(),stackName);
-        DBController.InsertFlashCard(DBController.ConnectDB(),flashcardName,definition,stackID);
-        return [flashcardName, definition, stackName];
-    }
-    public static void UpdateFlashCard()
-    {
-        //view all flash cards
-        DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
-        Console.WriteLine("Enter the ID of the Flashcard you want to edit");
-        int flashcardIDInt = 0;
-        while (true)
-        {
-            string flashcardID = Console.ReadLine();
-            bool validID = int.TryParse(flashcardID, out flashcardIDInt);
-            if (validID)
-            {
-                break;
-            }
-        }
-        Console.WriteLine("Enter the new Flashcard name");
-        string name = Console.ReadLine();
-        Console.WriteLine("Enter the new Flashcard definition");
-        string definition = Console.ReadLine();
-        Console.WriteLine("Enter the new stack");
-        string stackName = "";
-        SqlConnection connection = DBController.ConnectDB();
-        while(true)
-        {
-            stackName = Console.ReadLine();
-            if (Validation.StackExists(stackName))
-            {
-                break;
-            }
-            else
-            {
-                Console.WriteLine("This stack does not exist. Do you want to create this?");
-                {
-                    if (Console.ReadLine().ToUpper().Trim()=="Y")
-                    {
-                        DBController.InsertStack(connection, stackName);
-                    }
-                    else
-                        Console.WriteLine("Please enter a valid stack.");
-                }
-            }
-        }
-        int stackID = DBController.QueryStackID(connection,stackName);
-        DBController.UpdateFlashCard(connection,flashcardIDInt,name,definition, stackID);
-    }
-    public static void DeleteFlashCard()
-    {
-        //  view all flash cards
-        DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
-        int flashcardID = 0;
-        while (true)
-        {
-            Console.WriteLine("Enter the ID of the flashcard to delete");
-            bool validInt = int.TryParse(Console.ReadLine(), out flashcardID);
-            if (validInt)
-                {
-                    break;
-                }
-        }
-        DBController.DeleteFlashCard(DBController.ConnectDB(), flashcardID);
-    }
+
 }
