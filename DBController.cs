@@ -113,10 +113,10 @@ class DBController
         connection.Close();
         AnsiConsole.Write(table);        
     }
-    public static void UpdateFlashCard(SqlConnection connection, int Id, string Name, String Definition, int StackID)
+    public static void UpdateFlashCard(SqlConnection connection, int Id, string Name, string Definition, int StackID)
     {
-        string sqlString = @"UPDATE FlashCards (Name, Definition, StackID)
-                            VALUES (@Name, @Definition, @StackID) WHERE ID = @Id;";
+        string sqlString = @"UPDATE FlashCards SET Name = @Name, Definition = @Definition, StackID = @StackID
+                            WHERE ID = @Id;";
         connection.Open();
         SqlCommand command = new SqlCommand(sqlString, connection);
         using (command)
@@ -127,6 +127,7 @@ class DBController
             command.Parameters.AddWithValue("StackID", StackID);
             command.ExecuteNonQuery();
         }
+        connection.Close();
     }
     public static void UpdateStack()
     {
@@ -141,10 +142,30 @@ class DBController
             command.Parameters.AddWithValue("ID", ID);
             command.ExecuteNonQuery();
         }
+        connection.Close();
     }
-    public static void DeleteStack()
+    public static void DeleteFlashCardStacks(SqlConnection connection, int id)
     {
-
+        string  sqlString = @"DEELETE FROM dbo.FlashCards
+                            WHERE StackId = @Id;";
+        connection.Open();
+        SqlCommand command = new SqlCommand(sqlString, connection);
+        using (command)
+        {
+            command.Parameters.AddWithValue("Id", id);
+            command.ExecuteNonQuery();
+            connection.Close();
+            return;
+        }
+    }
+    public static void DeleteStack(SqlConnection connection, string Name)
+    {
+        //Get stack ID
+        int stackId = QueryStackID(connection,Name);
+        //Delete all flashcards with the stackID
+        DeleteFlashCardStacks(connection,stackId);
+        //Delete the stack from stack table
+        DeleteStack(connection,Name);
     }    
     public static int InsertFlashCard(SqlConnection connection, string Name, string Definition, int StackID)
     {
@@ -157,8 +178,12 @@ class DBController
             command.Parameters.AddWithValue("Name", Name);
             command.Parameters.AddWithValue("Definition", Definition);
             command.Parameters.AddWithValue("StackId", StackID);
-            return Convert.ToInt32(command.ExecuteScalar());
+            
+            int output = Convert.ToInt32(command.ExecuteScalar());
+            connection.Close();
+            return output;
         }
+        
     }
     public static int InsertStack(SqlConnection connection, string Name)
     {
@@ -169,7 +194,9 @@ class DBController
         using (command)
         {
             command.Parameters.AddWithValue("Name",Name);
-            return Convert.ToInt32(command.ExecuteScalar());
+            int output = Convert.ToInt32(command.ExecuteScalar());
+            connection.Close();
+            return output;
         }
     }
     public static List<String> QueryStacks(SqlConnection Connection)
@@ -198,7 +225,9 @@ class DBController
         {
             while (reader.Read())
             {
-                return (int)reader[0];
+                int output = (int)reader[0];
+                connection.Close();
+                return output;
             }
         }
         connection.Close();

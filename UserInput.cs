@@ -87,6 +87,7 @@ class UserInput
         Console.WriteLine("C to Create a Flashcard in current stack");
         Console.WriteLine("E to Edit a Flashcard");
         Console.WriteLine("D to Delete a Flashcard");
+        Console.WriteLine("Z to Delete this Stack");
         
         string result = Console.ReadLine().ToUpper().Trim();
         SqlConnection connection  = DBController.ConnectDB();
@@ -187,6 +188,24 @@ class UserInput
                     }
                 }
                 DBController.DeleteFlashCard(connection, ID);
+                break;
+            
+            case "Z":
+                Console.WriteLine($"{ Stack } stack is now deleted");
+                Console.WriteLine("All Flashcards in this stack are deleted");
+                Console.WriteLine("Please Confirm (Y/N");
+                result = Console.ReadLine().ToUpper().Trim();
+
+                if (result == "Y")
+                {
+                    DBController.DeleteStack(connection, Stack);
+                    Console.WriteLine("Stack its Flash cards deleted.");
+                }
+                else
+                {
+                    Console.WriteLine("Aborted Delete Stack.");
+                }
+
                 break;
             default:
                 break;
