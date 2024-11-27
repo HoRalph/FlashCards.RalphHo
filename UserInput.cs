@@ -193,7 +193,7 @@ class UserInput
             case "Z":
                 Console.WriteLine($"{ Stack } stack is now deleted");
                 Console.WriteLine("All Flashcards in this stack are deleted");
-                Console.WriteLine("Please Confirm (Y/N");
+                Console.WriteLine("Please Confirm (Y/N)");
                 result = Console.ReadLine().ToUpper().Trim();
 
                 if (result == "Y")

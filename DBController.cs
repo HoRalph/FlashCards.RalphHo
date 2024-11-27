@@ -135,7 +135,7 @@ class DBController
     }
     public static void DeleteFlashCard(SqlConnection connection, int ID)
     {
-        string sqlString = @"DELETE FROM Flashcards WHERE ID = @ID;";
+        string sqlString = @"DELETE FROM FlashCards WHERE ID = @ID;";
         connection.Open();
         using (SqlCommand command = new SqlCommand(sqlString,connection) )
         {
@@ -146,7 +146,7 @@ class DBController
     }
     public static void DeleteFlashCardStacks(SqlConnection connection, int id)
     {
-        string  sqlString = @"DEELETE FROM dbo.FlashCards
+        string  sqlString = @"DELETE FROM FlashCards
                             WHERE StackId = @Id;";
         connection.Open();
         SqlCommand command = new SqlCommand(sqlString, connection);
@@ -154,9 +154,9 @@ class DBController
         {
             command.Parameters.AddWithValue("Id", id);
             command.ExecuteNonQuery();
+        }
             connection.Close();
             return;
-        }
     }
     public static void DeleteStack(SqlConnection connection, string Name)
     {
@@ -165,7 +165,17 @@ class DBController
         //Delete all flashcards with the stackID
         DeleteFlashCardStacks(connection,stackId);
         //Delete the stack from stack table
-        DeleteStack(connection,Name);
+        string  sqlString = @"DELETE FROM Stacks
+                            WHERE ID = @Id;";
+        connection.Open();
+        SqlCommand command = new SqlCommand(sqlString, connection);
+        using (command)
+        {
+            command.Parameters.AddWithValue("Id", stackId);
+            command.ExecuteNonQuery();
+        }
+            connection.Close();
+            return;
     }    
     public static int InsertFlashCard(SqlConnection connection, string Name, string Definition, int StackID)
     {
