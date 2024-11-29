@@ -303,26 +303,28 @@ class DBController
     //revise this method
     public static void ViewFlashcardsInStack(SqlConnection Connection, string Stack)
     {
-        string sqlString = @"SELECT FlashCards.ID, FlashCards.Name, FlashCards.Definition, Stacks.Name
+/*         string sqlString = @"SELECT FlashCards.ID, FlashCards.Name, FlashCards.Definition, Stacks.Name
                             FROM FlashCards
                              LEFT JOIN Stacks ON FlashCards.StackID = Stacks.ID 
-                             WHERE Stacks.Name = @Stack;";
-        Connection.Open();
+                             WHERE Stacks.Name = @Stack;"; */
+        //Connection.Open();
         Table table = new Table();
         table.AddColumn("ID");
         table.AddColumn("Name");
         table.AddColumn("Definition");
         table.AddColumn("Stack Name");
-        using(SqlCommand command = new SqlCommand(sqlString, Connection))
+        List<StackModel> Stacks = GetStacks(Connection);
+        foreach(StackModel stack in Stacks)
         {
-            command.Parameters.AddWithValue("Stack", Stack);
-            SqlDataReader reader = command.ExecuteReader();
-            while(reader.Read())
+            if(stack.Name == Stack)
             {
-                table.AddRow([reader[0].ToString(), reader[1].ToString(), reader[2].ToString(), reader[3].ToString()]);
+                foreach (FlashCardModel flashCard in stack.FlashCards)
+                {
+                    table.AddRow([flashCard.Id.ToString(), flashCard.Name, flashCard.Definition, stack.Name]);
+                }
             }
         }
-        Connection.Close();
+        //Connection.Close();
         AnsiConsole.Write(table);
     }
     public static void XFlashcardsInStack(SqlConnection connection, string Stack, int cardNumber)
