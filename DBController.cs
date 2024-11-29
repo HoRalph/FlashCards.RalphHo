@@ -225,6 +225,51 @@ class DBController
         Connection.Close();
         return stacks;
     }
+     public static List<FlashCardModel> GetFlashCardsInStack(SqlConnection connection, string stackName)
+    {
+        List<FlashCardModel> stack = new List<FlashCardModel>();
+                string sqlString = @"SELECT FlashCards.ID, FlashCards.Name, FlashCards.Definition, Stacks.ID
+                            FROM FlashCards
+                             LEFT JOIN Stacks ON FlashCards.StackID = Stacks.ID 
+                             WHERE Stacks.Name = @Stack;";
+        connection.Open();
+        using(SqlCommand command = new SqlCommand(sqlString, connection))
+        {
+            command.Parameters.AddWithValue("Stack", stackName);
+            SqlDataReader reader = command.ExecuteReader();
+            while(reader.Read())
+            {
+                FlashCardModel flashCard = new FlashCardModel();
+                flashCard.Id = Convert.ToInt32(reader[0]);
+                flashCard.Name = reader[1].ToString();
+                flashCard.Definition = reader[2].ToString();
+                flashCard.StackId = Convert.ToInt32(reader[3]);
+                flashCard.StackName = stackName;
+                stack.Add(flashCard);
+            }
+        }
+        connection.Close();
+        return stack;
+    }
+
+    public static List<StackModel> GetStacks(SqlConnection connection)
+    {
+    List<StackModel> Stacks = new List<StackModel>();
+    List<string> StacksList =  QueryStacks(connection);
+
+        foreach (string st in StacksList)
+        {
+            StackModel stack = new StackModel();
+            //ID, Name, FlashCard
+            stack.Name = st;
+            stack.Id = QueryStackID(connection, st);
+            stack.FlashCards = GetFlashCardsInStack(connection, st);
+            Stacks.Add(stack);
+        }
+
+    return Stacks;
+    }
+
     public static int QueryStackID(SqlConnection connection, string Name)
     {
         string sqlString = @"SELECT ID FROM Stacks WHERE Name = @Name;";
@@ -243,17 +288,19 @@ class DBController
         connection.Close();
         return 0;
     }
-    public static void ViewStacks(List<string> StackList)
+    public static void ViewStacks(List<StackModel> stacks)
     {
         Console.Clear();
         Table table = new Table();
         table.AddColumn("Stack");
-        foreach (string stack in StackList)
+        foreach (StackModel stack in stacks)
         {
-            table.AddRow(stack);
+            table.AddRow(stack.Name);
         }
         AnsiConsole.Write(table);
     }
+    
+    //revise this method
     public static void ViewFlashcardsInStack(SqlConnection Connection, string Stack)
     {
         string sqlString = @"SELECT FlashCards.ID, FlashCards.Name, FlashCards.Definition, Stacks.Name
@@ -339,4 +386,6 @@ class DBController
         }
         
     }
+
+
 }

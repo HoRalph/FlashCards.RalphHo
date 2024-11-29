@@ -21,30 +21,26 @@ public static class Logic
     }
 
 
-
-    //Delete Flash Cards
-    public static void DeleteFlashCard(int Id)
-    {
+    // //Delete Flash Cards
+    // public static void DeleteFlashCard(int Id)
+    // {
         
-        return;
-    }
+    //     return;
+    // }
     //update FlashCard
-        public static FlashCardModel UpdateFlashCard(string Name, string Definition, int Id)
-        {
-            //Get FlashCard from DB
+    // public static FlashCardModel UpdateFlashCard(string Name, string Definition, int Id)
+    // {
+    //     //Get FlashCard from DB
 
-            //Set FlashCard
-            FlashCardModel FlashCard = new FlashCardModel();
-            FlashCard.Name = Name;
-            FlashCard.Definition = Definition;
-            FlashCard.Id = Id;
+    //     //Set FlashCard
+    //     FlashCardModel FlashCard = new FlashCardModel();
+    //     FlashCard.Name = Name;
+    //     FlashCard.Definition = Definition;
+    //     FlashCard.Id = Id;
 
-            //Save Flash Card to db
-            return  FlashCard;
-        }
-
-
-
+    //     //Save Flash Card to db
+    //     return  FlashCard;
+    // }
 
     //update FlashCard
     public static void UpdateFlashCard()
