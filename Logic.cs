@@ -46,7 +46,7 @@ public static class Logic
     public static void UpdateFlashCard()
     {
         //view all flash cards
-        DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
+        DBController.ViewAllFlashCards(DBController.ConnectDB());
         Console.WriteLine("Enter the ID of the Flashcard you want to edit");
         int flashcardIDInt = 0;
         while (true)
@@ -93,7 +93,7 @@ public static class Logic
     public static void DeleteFlashCard()
     {
         //  view all flash cards
-        DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
+        DBController.ViewAllFlashCards(DBController.ConnectDB());
         int flashcardID = 0;
         while (true)
         {

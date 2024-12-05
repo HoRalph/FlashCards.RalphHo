@@ -225,9 +225,8 @@ class UserInput
         {
             case "V":
                 Console.Clear();
-                DBController.ViewTable(DBController.ConnectDB(), "FlashCards");
+                DBController.ViewAllFlashCards(DBController.ConnectDB());
                 Console.WriteLine();
-                DBController.ViewTable(DBController.ConnectDB(), "Stacks");
                 Console.ReadLine();
                 break;
             case "C":

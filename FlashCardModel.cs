@@ -3,6 +3,7 @@ public class FlashCardModel
     private string _name="";
     private string _definition="";
     public int Id{get;set;}
+    public int Position{get;set;}
     public string Name
     {
         get{return _name;}

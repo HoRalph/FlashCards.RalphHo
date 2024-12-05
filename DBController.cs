@@ -73,47 +73,7 @@ class DBController
             connection.Close();
         }
     }
-    public static void ViewTable(SqlConnection connection,string tableName)
-    {
-        string sqlString = @$"SELECT * FROM {tableName};";
-        SqlCommand command = new SqlCommand(sqlString, connection);
-        
-        connection.Open();
-        var table = new Table();
-        List<string[]> flashcardRow = new List<string[]>();
-        string[][] stackRow = new string[3][];
-        using(SqlDataReader reader = command.ExecuteReader())
-        {
-            switch (tableName)
-            {
-                case "FlashCards":
-                    table.AddColumn("ID");
-                    table.AddColumn("Name");
-                    table.AddColumn("StackId");
-                    table.AddColumn("Definition");
-                    int rowCount = 0;
-                    while (reader.Read())
-                    {
-                        flashcardRow.Add([reader[0].ToString(), reader[1].ToString(), reader[2].ToString()  , reader[3].ToString() ]);
-                        table.AddRow([reader[0].ToString(), reader[1].ToString(), reader[2].ToString()  , reader[3].ToString() ]);
-                    }
-                    break;
-                case "Stacks":
-                    table.AddColumn("ID");
-                    table.AddColumn("Name");
-                    rowCount = 0;
-                    while (reader.Read())
-                    {
-                        table.AddRow([reader[0].ToString(),reader[1].ToString()]);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-        connection.Close();
-        AnsiConsole.Write(table);        
-    }
+    
     public static void UpdateFlashCard(SqlConnection connection, int Id, string Name, string Definition, int StackID)
     {
         string sqlString = @"UPDATE FlashCards SET Name = @Name, Definition = @Definition, StackID = @StackID
@@ -238,16 +198,21 @@ class DBController
         {
             command.Parameters.AddWithValue("Stack", stackName);
             SqlDataReader reader = command.ExecuteReader();
+            int flashCardPosition = 0;
             while(reader.Read())
             {
+                flashCardPosition +=1;
                 FlashCardModel flashCard = new FlashCardModel();
                 flashCard.Id = Convert.ToInt32(reader[0]);
+                flashCard.Position = flashCardPosition;
                 flashCard.Name = reader[1].ToString();
                 flashCard.Definition = reader[2].ToString();
                 flashCard.StackId = Convert.ToInt32(reader[3]);
                 flashCard.StackName = stackName;
                 stack.Add(flashCard);
+                
             }
+            flashCardPosition = 0;
         }
         connection.Close();
         return stack;
@@ -304,11 +269,7 @@ class DBController
     //revise this method
     public static void ViewFlashcardsInStack(SqlConnection Connection, string Stack)
     {
-/*         string sqlString = @"SELECT FlashCards.ID, FlashCards.Name, FlashCards.Definition, Stacks.Name
-                            FROM FlashCards
-                             LEFT JOIN Stacks ON FlashCards.StackID = Stacks.ID 
-                             WHERE Stacks.Name = @Stack;"; */
-        //Connection.Open();
+
         Table table = new Table();
         table.AddColumn("ID");
         table.AddColumn("Name");
@@ -321,9 +282,31 @@ class DBController
             {
                 foreach (FlashCardModel flashCard in stack.FlashCards)
                 {
-                    table.AddRow([flashCard.Id.ToString(), flashCard.Name, flashCard.Definition, stack.Name]);
+                    table.AddRow([flashCard.Position.ToString(), flashCard.Name, flashCard.Definition, stack.Name]);
                 }
             }
+        }
+        //Connection.Close();
+        AnsiConsole.Write(table);
+    }
+    public static void ViewAllFlashCards(SqlConnection Connection)
+    {
+        Table table = new Table();
+        table.AddColumn("Stack Name");
+        table.AddColumn("ID");
+        table.AddColumn("Name");
+        table.AddColumn("Definition");
+
+        
+        List<StackModel> Stacks = GetStacks(Connection);
+        foreach(StackModel stack in Stacks)
+        {
+
+                foreach (FlashCardModel flashCard in stack.FlashCards)
+                {
+                    table.AddRow([stack.Name ,flashCard.Id.ToString(), flashCard.Name, flashCard.Definition]);
+                }
+            
         }
         //Connection.Close();
         AnsiConsole.Write(table);
