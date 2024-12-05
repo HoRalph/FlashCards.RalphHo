@@ -19,6 +19,7 @@ sql string
 
 */
 using System.Data.SqlTypes;
+using System.Runtime.CompilerServices;
 using Microsoft.Data.SqlClient;
 using Spectre;
 using Spectre.Console;
@@ -316,7 +317,7 @@ class DBController
         List<StackModel> Stacks = GetStacks(Connection);
         foreach(StackModel stack in Stacks)
         {
-            if(stack.Name == Stack)
+            if(stack.Name.ToUpper().Trim() == Stack.ToUpper().Trim())
             {
                 foreach (FlashCardModel flashCard in stack.FlashCards)
                 {

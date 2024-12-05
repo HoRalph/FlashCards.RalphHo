@@ -26,7 +26,7 @@ class UserInput
             case "0":
                 return;
             case "1":
-                DBController.ViewStacks(DBController.QueryStacks(DBController.ConnectDB()));
+                DBController.ViewStacks(DBController.GetStacks(DBController.ConnectDB()));
                 while(true)
                 {
                     Console.WriteLine("Enter the stack name to select");
@@ -48,7 +48,7 @@ class UserInput
                 break;
             case "3"://study session
                 Console.Clear();
-                DBController.ViewStacks(DBController.QueryStacks(DBController.ConnectDB()));
+                DBController.ViewStacks(DBController.GetStacks(DBController.ConnectDB()));
                 Console.WriteLine();
                 Console.WriteLine("Enter a Stack to study.");
                 string stack = "";
@@ -97,7 +97,7 @@ class UserInput
                 MainMenu();
                 break;
             case "X":
-                DBController.ViewStacks(DBController.QueryStacks(connection));
+                DBController.ViewStacks(DBController.GetStacks(connection));
                 while(true)
                 {
                     Console.WriteLine("Please enter the new stack name to select.");
