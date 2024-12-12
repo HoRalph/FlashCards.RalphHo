@@ -9,6 +9,7 @@ class UserInput
     public static void MainMenu()
     {
        bool validInput = false; 
+       SqlConnection connection  = DBController.ConnectDB();
         while (true)
         {
             Console.WriteLine("---------------------------");
@@ -46,14 +47,21 @@ class UserInput
             case "2":
                 UserInput.FlashCardMenu();
                 break;
-            case "3"://study session
+            /*
+            study session
+            */
+
+
+            case "3":
                 Console.Clear();
-                DBController.ViewStacks(DBController.GetStacks(DBController.ConnectDB()));
-                Console.WriteLine();
-                Console.WriteLine("Enter a Stack to study.");
+
                 string stack = "";
                 while(true)
                 {
+                    
+                    DBController.ViewStacks(DBController.GetStacks(DBController.ConnectDB()));
+                    Console.WriteLine();
+                    Console.WriteLine("Enter a Stack to study.");
                     stack = Console.ReadLine();
                     if (Logic.StackExists(stack))
                     {
@@ -64,9 +72,18 @@ class UserInput
                         Console.WriteLine("Invalid Stack. Please retry.");
                     }
                 }
-                
-
+                List<FlashCardModel> flashCardStack = DBController.GetFlashCardsInStack(connection,stack);
+                Console.WriteLine("10 cards will be chosen at random, if there are less than 10 cards in the stack, the whole stack will be included.");
+                //pick random
+                flashCardStack = Logic.FlashCardQuiz(flashCardStack, 10);
+                foreach(FlashCardModel card in flashCardStack)
+                {
+                    Console.WriteLine(card.Name);
+                }
+                Console.ReadLine();
                 break;
+
+
             case "4":
                 break;
             default:

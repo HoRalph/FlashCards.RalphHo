@@ -1,3 +1,5 @@
+using System.Data.Common;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Data.SqlClient;
 
 public static class Logic
@@ -106,9 +108,6 @@ public static class Logic
         }
         DBController.DeleteFlashCard(DBController.ConnectDB(), flashcardID);
     }
-    //Get all FlashCards
-
-    //Get all Stacks
 
     
 
@@ -129,6 +128,49 @@ public static class Logic
             return false;
         }
     }
-    //Check if Stack Exists
+
+
+
+    //Pick random stack of cards
+    public static List<FlashCardModel> FlashCardQuiz(List<FlashCardModel> stack, int cardNumber = 0)
+    {
+        List<FlashCardModel> result = new List<FlashCardModel>();
+        List<int> ids = new List<int>();
+        Random rand = new Random();
+        if (cardNumber > stack.Count())
+        {
+            cardNumber = stack.Count();
+        }
+        else if (cardNumber == 0)
+        {
+            cardNumber = stack.Count();
+        }
+        
+        for (int i = 0; i<cardNumber; i++)
+        {
+            while(true)
+            {
+                
+                int id = rand.Next(cardNumber);
+                if (!ids.Contains(id))
+                {
+                    ids.Add(id);
+                    break;
+                }
+                else if (i==cardNumber)
+                {
+                    break;
+                }
+                
+            }
+        }
+        
+        foreach (int i in ids)
+        {
+            result.Add(stack[i]);
+        }
+
+        return result;
+    }
     
 }
