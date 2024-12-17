@@ -132,7 +132,7 @@ public static class Logic
 
 
     //Pick random stack of cards
-    public static List<FlashCardModel> FlashCardQuiz(List<FlashCardModel> stack, int cardNumber = 0)
+    public static List<FlashCardModel> CreateQuizCards(List<FlashCardModel> stack, int cardNumber = 0)
     {
         List<FlashCardModel> result = new List<FlashCardModel>();
         List<int> ids = new List<int>();
@@ -173,4 +173,36 @@ public static class Logic
         return result;
     }
     
+    public static SessionModel StudySession(List<FlashCardModel> quiz)
+    {
+        SessionModel session = new SessionModel();
+        
+        decimal correct = 0;
+        session.FlashCards = quiz;
+        session.StackId = quiz[0].StackId;
+        session.Date = DateTime.Now.ToString("MM/DD/yyyy h:mm:ss");
+        foreach (FlashCardModel card in quiz)
+        {
+            Console.WriteLine($"What is the definiation of {card.Name}?");
+            string answer = Console.ReadLine().ToUpper().Trim();       
+            
+            if (answer == card.Definition)
+            {
+                Console.WriteLine("Correct Answer!");
+                correct+=1;
+            }
+            else
+            {
+                Console.WriteLine("Wrong Answer!");
+            }
+        }
+        session.Score = (decimal)correct/quiz.Count();
+        return session;
+    }
+
+
+
+    //write quiz results to database
+
+    //read quiz results
 }

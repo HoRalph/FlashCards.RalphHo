@@ -18,6 +18,8 @@ crate table
 sql string
 
 */
+using System.Collections;
+using System.Data.Common;
 using System.Data.SqlTypes;
 using System.Runtime.CompilerServices;
 using Microsoft.Data.SqlClient;
@@ -371,6 +373,70 @@ class DBController
             return 0;
         }
         
+    }
+    public static int InsertSesion(SqlConnection connection, SessionModel session)
+    {
+        string  sqlString = @"INSERT INTO Sessions (DateTime, StackId, Score, FlashCardIds) 
+                            VALUES (@datetime, @stackId, @score, @flashCardsIds); SELECT SCOPE_IDENTITY() AS INT";
+        
+        string datetime = session.Date;
+        int stackId = session.StackId;
+        decimal score = session.Score;
+        string flashCardIds="";
+        foreach (FlashCardModel card in session.FlashCards)
+        {
+            flashCardIds += $", {card.Id}";
+        }
+        
+        connection.Open();
+        SqlCommand command = new SqlCommand(sqlString, connection);
+        using (command)
+        {
+            command.Parameters.AddWithValue("datetime", datetime);
+            command.Parameters.AddWithValue("stackId", stackId);
+            command.Parameters.AddWithValue("score", score);
+            command.Parameters.AddWithValue("flashCardsIds", flashCardIds);
+            
+            int output = Convert.ToInt32(command.ExecuteScalar());
+            connection.Close();
+            return output;
+        }
+    }
+    
+    public static List<SessionModel> QuerySession(SqlConnection connection, int id)
+
+    {
+        List<SessionModel> sessions = new List<SessionModel>();
+        SessionModel session = new SessionModel();
+        List<FlashCardModel> cards = new List<FlashCardModel>();
+        FlashCardModel card = new FlashCardModel();
+        List<StackModel> stacks = DBController.GetStacks(connection);
+
+        string sqlString = @"SELECT DateTime, StackId, Score, FlashCardIds
+                            FROM Sessions;";
+        connection.Open();
+        
+        using(SqlCommand command = new SqlCommand(sqlString, connection))
+        {
+            SqlDataReader reader = command.ExecuteReader();
+            
+            while(reader.Read())
+            {
+                
+                session.Date = reader[0].ToString();
+                session.StackId = Convert.ToInt32(reader[1]);
+                session.Score= Convert.ToDecimal(reader[2]);
+                List<FlashCardModel> stack = stacks.Where(x => x.Id == session.Id).First().FlashCards;
+                foreach (string number in reader[3].ToString().Split(','))
+                {
+                    cards.Add(stack.Where(x => x.Id == Convert.ToInt32(number)).First());
+                }
+                session.FlashCards = cards;
+                sessions.Add(session);
+            }
+        }
+        connection.Close();
+        return sessions;
     }
 
 

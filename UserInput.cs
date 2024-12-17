@@ -75,11 +75,8 @@ class UserInput
                 List<FlashCardModel> flashCardStack = DBController.GetFlashCardsInStack(connection,stack);
                 Console.WriteLine("10 cards will be chosen at random, if there are less than 10 cards in the stack, the whole stack will be included.");
                 //pick random
-                flashCardStack = Logic.FlashCardQuiz(flashCardStack, 10);
-                foreach(FlashCardModel card in flashCardStack)
-                {
-                    Console.WriteLine(card.Name);
-                }
+                flashCardStack = Logic.CreateQuizCards(flashCardStack, 10);
+                SessionModel session = Logic.StudySession(flashCardStack);
                 Console.ReadLine();
                 break;
 
