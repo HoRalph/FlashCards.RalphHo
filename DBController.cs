@@ -403,7 +403,7 @@ class DBController
         }
     }
     
-    public static List<SessionModel> QuerySession(SqlConnection connection, int id)
+    public static List<SessionModel> QuerySession(SqlConnection connection)
 
     {
         List<SessionModel> sessions = new List<SessionModel>();
@@ -438,6 +438,20 @@ class DBController
         connection.Close();
         return sessions;
     }
-
-
+    //view all study sessions
+    public static void ViewAllSessions(SqlConnection connection, List<SessionModel> models)
+    {
+        Table table = new Table();
+        table.AddColumn("ID");
+        table.AddColumn("DateTime");
+        table.AddColumn("Stack");
+        table.AddColumn("Score");
+        List<StackModel> Stacks = GetStacks(connection);
+        foreach(SessionModel model in models)
+        {
+        string stackName = Stacks.Where(x => x.Id == model.StackId).First().Name;
+        table.AddRow([model.Id.ToString(), model.Date, stackName, model.Score.ToString()]);
+        }
+        AnsiConsole.Write(table);
+    }
 }

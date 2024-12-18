@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Data.Common;
+using System.Net.Quic;
 using System.Runtime.InteropServices;
 using Microsoft.Data.SqlClient;
 
@@ -77,12 +78,23 @@ class UserInput
                 //pick random
                 flashCardStack = Logic.CreateQuizCards(flashCardStack, 10);
                 SessionModel session = Logic.StudySession(flashCardStack);
-                Console.ReadLine();
+                Console.WriteLine();
+                Console.WriteLine("Save session? Y/N");
+                if (Console.ReadLine().ToUpper().Trim() == "Y")
+                {
+                    DBController.InsertSesion(connection, session);
+                }
+                else
+                {
+                    Console.WriteLine("Session not saved");
+                }
                 break;
-
 
             case "4":
+            //view sessions
+            DBController.ViewAllSessions(connection,DBController.QuerySession(connection));
                 break;
+            
             default:
                 validInput = false;
                 Console.WriteLine("Invalid input. Please retry.");

@@ -186,7 +186,7 @@ public static class Logic
             Console.WriteLine($"What is the definiation of {card.Name}?");
             string answer = Console.ReadLine().ToUpper().Trim();       
             
-            if (answer == card.Definition)
+            if (answer == card.Definition.ToUpper().Trim())
             {
                 Console.WriteLine("Correct Answer!");
                 correct+=1;
