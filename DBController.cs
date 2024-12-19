@@ -61,8 +61,8 @@ class DBController
                                     CREATE TABLE Sessions (
                                     ID Int NOT NULL IDENTITY(1,1) PRIMARY KEY,
                                     DateTime varchar(255),
-                                    Stack varchar(255),
-                                    Score DECIMAL(2,2 ));";
+                                    StackId int,
+                                    Score varchar(255));";
         using (connection)
         {
             connection.Open();
@@ -381,12 +381,13 @@ class DBController
         
         string datetime = session.Date;
         int stackId = session.StackId;
-        decimal score = session.Score;
+        string score = session.Score;
         string flashCardIds="";
         foreach (FlashCardModel card in session.FlashCards)
         {
-            flashCardIds += $", {card.Id}";
+            flashCardIds += $"{card.Id},";
         }
+        flashCardIds = flashCardIds.Remove(flashCardIds.Length-1);
         
         connection.Open();
         SqlCommand command = new SqlCommand(sqlString, connection);
@@ -397,7 +398,7 @@ class DBController
             command.Parameters.AddWithValue("score", score);
             command.Parameters.AddWithValue("flashCardsIds", flashCardIds);
             
-            int output = Convert.ToInt32(command.ExecuteScalar());
+            var output = Convert.ToInt32(command.ExecuteScalar());
             connection.Close();
             return output;
         }
@@ -407,7 +408,7 @@ class DBController
 
     {
         List<SessionModel> sessions = new List<SessionModel>();
-        SessionModel session = new SessionModel();
+        
         List<FlashCardModel> cards = new List<FlashCardModel>();
         FlashCardModel card = new FlashCardModel();
         List<StackModel> stacks = DBController.GetStacks(connection);
@@ -422,11 +423,11 @@ class DBController
             
             while(reader.Read())
             {
-                
+                SessionModel session = new SessionModel();
                 session.Date = reader[0].ToString();
                 session.StackId = Convert.ToInt32(reader[1]);
-                session.Score= Convert.ToDecimal(reader[2]);
-                List<FlashCardModel> stack = stacks.Where(x => x.Id == session.Id).First().FlashCards;
+                session.Score= reader[2].ToString();
+                List<FlashCardModel> stack = stacks.Where(x => x.Id == session.StackId).First().FlashCards;
                 foreach (string number in reader[3].ToString().Split(','))
                 {
                     cards.Add(stack.Where(x => x.Id == Convert.ToInt32(number)).First());

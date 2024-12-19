@@ -7,6 +7,6 @@ public class SessionModel
     public string Date {get;set;}
     public int StackId {get; set;}
     public List<FlashCardModel> FlashCards {get;set;}
-    public  decimal Score{get;set;}
+    public  string Score{get;set;}
 
 }

@@ -196,7 +196,7 @@ public static class Logic
                 Console.WriteLine("Wrong Answer!");
             }
         }
-        session.Score = (decimal)correct/quiz.Count();
+        session.Score = $"{correct}/{quiz.Count()}";
         return session;
     }
 
