@@ -16,7 +16,7 @@ class UserInput
             Console.WriteLine("---------------------------");
             Console.WriteLine( "0 Exit");
             Console.WriteLine( "1 Manage Stacks");
-            Console.WriteLine( "2 Manage FlashCards");
+            //Console.WriteLine( "2 Manage FlashCards");
             Console.WriteLine( "3 Study");
             Console.WriteLine( "4 View Study session data");
             Console.WriteLine("---------------------------");          

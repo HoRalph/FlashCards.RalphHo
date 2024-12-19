@@ -17,32 +17,12 @@ public static class Logic
     }
     public static FlashCardModel SaveFlashCard(FlashCardModel model)
     {
-        //int stackID = DBController.QueryStackID(DBController.ConnectDB(),model.Name);
         DBController.InsertFlashCard(DBController.ConnectDB(),model.Name,model.Definition,model.StackId);
         return model;
     }
 
 
-    // //Delete Flash Cards
-    // public static void DeleteFlashCard(int Id)
-    // {
-        
-    //     return;
-    // }
-    //update FlashCard
-    // public static FlashCardModel UpdateFlashCard(string Name, string Definition, int Id)
-    // {
-    //     //Get FlashCard from DB
 
-    //     //Set FlashCard
-    //     FlashCardModel FlashCard = new FlashCardModel();
-    //     FlashCard.Name = Name;
-    //     FlashCard.Definition = Definition;
-    //     FlashCard.Id = Id;
-
-    //     //Save Flash Card to db
-    //     return  FlashCard;
-    // }
 
     //update FlashCard
     public static void UpdateFlashCard()
@@ -116,8 +96,7 @@ public static class Logic
     //Check if FlashCard Exists
     public static bool StackExists(string Stack)
     {
-        //check if stack is in the stack table
-        //return false if not
+
         List<string> stackList  = DBController.QueryStacks(DBController.ConnectDB());
         if (stackList.Contains(Stack.ToUpper().Trim()))
         {
@@ -183,6 +162,7 @@ public static class Logic
         session.Date = DateTime.Now.ToString("MM/DD/yyyy h:mm:ss");
         foreach (FlashCardModel card in quiz)
         {
+            Console.Clear();
             Console.WriteLine($"What is the definiation of {card.Name}?");
             string answer = Console.ReadLine().ToUpper().Trim();       
             
@@ -196,13 +176,11 @@ public static class Logic
                 Console.WriteLine("Wrong Answer!");
             }
         }
+        Console.WriteLine($"You answered {correct} cards out of {quiz.Count()}");
+        Console.WriteLine("Press any key to continue");
+        Console.ReadLine();
         session.Score = $"{correct}/{quiz.Count()}";
         return session;
     }
 
-
-
-    //write quiz results to database
-
-    //read quiz results
 }
