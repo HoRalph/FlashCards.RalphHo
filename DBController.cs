@@ -249,7 +249,7 @@ class DBController
     }
     
     //revise this method
-    public static List<FlashCardModel> ViewFlashcardsInStack(SqlConnection Connection, string Stack)
+    public static List<FlashCardDto> ViewFlashcardsInStack(SqlConnection Connection, string Stack)
     {
 
         Table table = new Table();
@@ -257,16 +257,24 @@ class DBController
         table.AddColumn("Name");
         table.AddColumn("Definition");
         table.AddColumn("Stack Name");
-        List<FlashCardModel> flashCards = new List<FlashCardModel>();
+        List<FlashCardDto> flashCards = new List<FlashCardDto>();
         List<StackModel> Stacks = GetStacks(Connection);
         foreach(StackModel stack in Stacks)
         {
             if(stack.Name.ToUpper().Trim() == Stack.ToUpper().Trim())
             {
+                int position = 0;
                 foreach (FlashCardModel flashCard in stack.FlashCards)
                 {
                     table.AddRow([flashCard.Position.ToString(), flashCard.Name, flashCard.Definition, stack.Name]);
-                    flashCards.Add(flashCard);
+                    FlashCardDto flashCardDto = new FlashCardDto();
+                    position +=1;
+                    flashCardDto.Position = position;
+                    flashCardDto.Id = flashCard.Id;
+                    flashCardDto.Name = flashCard.Name;
+                    flashCardDto.Definition = flashCard.Definition;
+                    flashCardDto.StackName = flashCard.StackName;
+                    flashCards.Add(flashCardDto);
                 }
             }
         }
