@@ -389,10 +389,10 @@ class DBController
             return output;
         }
     }
-    /*public static void test()
+    public static void test()
     {
         FlashCardDto
-    } */
+    }
     public static List<SessionModel> QuerySession(SqlConnection connection)
 
     {
