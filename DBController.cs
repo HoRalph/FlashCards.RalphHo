@@ -1,23 +1,3 @@
-/*string connectionString = System.Configuration.ConfigurationManager.AppSettings.Get("key1");
-SqlConnection connection = new SqlConnection("Data Source = DESKTOP-UH1K1R2; Initial Catalog = TutorialDB; Integrated Security = true;TrustServerCertificate=true;");
-connection.Open();
-SqlCommand command = new SqlCommand("SELECT * FROM dbo.Customers", connection);
-using (SqlDataReader reader = command.ExecuteReader())
-{
-    while (reader.Read())
-    {
-        Console.WriteLine($"{reader[0]} \t {reader[1]} \t {reader[2]} \t ");
-    }
-
-}
-
-*/
-
-/*
-crate table
-sql string
-
-*/
 using System.Collections;
 using System.Data.Common;
 using System.Data.SqlTypes;
@@ -269,7 +249,7 @@ class DBController
     }
     
     //revise this method
-    public static void ViewFlashcardsInStack(SqlConnection Connection, string Stack)
+    public static List<FlashCardModel> ViewFlashcardsInStack(SqlConnection Connection, string Stack)
     {
 
         Table table = new Table();
@@ -277,6 +257,7 @@ class DBController
         table.AddColumn("Name");
         table.AddColumn("Definition");
         table.AddColumn("Stack Name");
+        List<FlashCardModel> flashCards = new List<FlashCardModel>();
         List<StackModel> Stacks = GetStacks(Connection);
         foreach(StackModel stack in Stacks)
         {
@@ -285,13 +266,15 @@ class DBController
                 foreach (FlashCardModel flashCard in stack.FlashCards)
                 {
                     table.AddRow([flashCard.Position.ToString(), flashCard.Name, flashCard.Definition, stack.Name]);
+                    flashCards.Add(flashCard);
                 }
             }
         }
-        //Connection.Close();
+        
         AnsiConsole.Write(table);
+        return flashCards;
     }
-    public static void ViewAllFlashCards(SqlConnection Connection)
+    public static List<FlashCardModel> ViewAllFlashCards(SqlConnection Connection)
     {
         Table table = new Table();
         table.AddColumn("Stack Name");
@@ -299,7 +282,7 @@ class DBController
         table.AddColumn("Name");
         table.AddColumn("Definition");
 
-        
+        List<FlashCardModel> flashCards = new List<FlashCardModel>();
         List<StackModel> Stacks = GetStacks(Connection);
         foreach(StackModel stack in Stacks)
         {
@@ -307,11 +290,14 @@ class DBController
                 foreach (FlashCardModel flashCard in stack.FlashCards)
                 {
                     table.AddRow([stack.Name ,flashCard.Id.ToString(), flashCard.Name, flashCard.Definition]);
+                    //FlashCardDto flashCardDto = new FlashCardDto();
+                    flashCards.Add(flashCard);
                 }
             
         }
         //Connection.Close();
         AnsiConsole.Write(table);
+        return flashCards;
     }
     public static void XFlashcardsInStack(SqlConnection connection, string Stack, int cardNumber)
     {
@@ -403,7 +389,10 @@ class DBController
             return output;
         }
     }
-    
+    /*public static void test()
+    {
+        FlashCardDto
+    } */
     public static List<SessionModel> QuerySession(SqlConnection connection)
 
     {
