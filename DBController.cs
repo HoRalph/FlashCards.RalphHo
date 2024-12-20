@@ -274,7 +274,7 @@ class DBController
         AnsiConsole.Write(table);
         return flashCards;
     }
-    public static List<FlashCardModel> ViewAllFlashCards(SqlConnection Connection)
+    public static List<FlashCardDto> ViewAllFlashCards(SqlConnection Connection)
     {
         Table table = new Table();
         table.AddColumn("Stack Name");
@@ -282,16 +282,24 @@ class DBController
         table.AddColumn("Name");
         table.AddColumn("Definition");
 
-        List<FlashCardModel> flashCards = new List<FlashCardModel>();
+        List<FlashCardDto> flashCards = new List<FlashCardDto>();
         List<StackModel> Stacks = GetStacks(Connection);
+        int position = 0;
         foreach(StackModel stack in Stacks)
         {
 
                 foreach (FlashCardModel flashCard in stack.FlashCards)
                 {
+                    
+                    position +=1;
                     table.AddRow([stack.Name ,flashCard.Id.ToString(), flashCard.Name, flashCard.Definition]);
-                    //FlashCardDto flashCardDto = new FlashCardDto();
-                    flashCards.Add(flashCard);
+                    FlashCardDto flashCardDto = new FlashCardDto();
+                    flashCardDto.Position = position;
+                    flashCardDto.Id = flashCard.Id;
+                    flashCardDto.StackName = flashCard.StackName;
+                    flashCardDto.Name = flashCard.Name;
+                    flashCardDto.Definition = flashCard.Definition;
+                    flashCards.Add(flashCardDto);
                 }
             
         }
@@ -389,10 +397,7 @@ class DBController
             return output;
         }
     }
-    public static void test()
-    {
-        FlashCardDto
-    }
+  
     public static List<SessionModel> QuerySession(SqlConnection connection)
 
     {
