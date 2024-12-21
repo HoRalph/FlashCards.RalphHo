@@ -116,6 +116,7 @@ class UserInput
         Console.WriteLine("D to Delete a Flashcard");
         Console.WriteLine("Z to Delete this Stack");
         
+        List<FlashCardDto> flashCardDtos = new List<FlashCardDto>();
         string result = Console.ReadLine().ToUpper().Trim();
         SqlConnection connection  = DBController.ConnectDB();
         switch (result)
@@ -178,14 +179,16 @@ class UserInput
                 DBController.InsertFlashCard(DBController.ConnectDB(),flashcardName,definition,stackID);
                 break;
             case "E":
-                DBController.ViewFlashcardsInStack(connection, Stack);
+                flashCardDtos = DBController.ViewFlashcardsInStack(connection, Stack);
                 Console.WriteLine("Enter the ID of the flashcard to edit.");
+                int position = 0;
                 int ID = 0;
                 while(true)
                 {
                     string inputID = Console.ReadLine();
-                    if (int.TryParse(inputID, out ID))
+                    if (int.TryParse(inputID, out position))
                     {
+                        ID = flashCardDtos.Where(x =>x.Position == position).First().Id;
                         break;
                     }
                     else
@@ -202,11 +205,14 @@ class UserInput
             case "D":
                 DBController.ViewFlashcardsInStack(connection, Stack);
                 Console.WriteLine("Enter the ID of the flashcard to delete.");
+                position = 0;
+                ID = 0;
                 while(true)
                 {
                     string inputID = Console.ReadLine();
-                    if (int.TryParse(inputID, out ID))
+                    if (int.TryParse(inputID, out position))
                     {
+                        ID = flashCardDtos.Where(x =>x.Position == position).First().Id;
                         break;
                     }
                     else
