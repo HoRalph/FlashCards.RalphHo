@@ -285,8 +285,8 @@ class DBController
     public static List<FlashCardDto> ViewAllFlashCards(SqlConnection Connection)
     {
         Table table = new Table();
-        table.AddColumn("Stack Name");
         table.AddColumn("ID");
+        table.AddColumn("Stack Name");
         table.AddColumn("Name");
         table.AddColumn("Definition");
 
@@ -300,7 +300,7 @@ class DBController
                 {
                     
                     position +=1;
-                    table.AddRow([stack.Name ,flashCard.Id.ToString(), flashCard.Name, flashCard.Definition]);
+                    table.AddRow([position.ToString(),stack.Name, flashCard.Name, flashCard.Definition]);
                     FlashCardDto flashCardDto = new FlashCardDto();
                     flashCardDto.Position = position;
                     flashCardDto.Id = flashCard.Id;

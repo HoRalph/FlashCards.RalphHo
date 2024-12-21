@@ -16,9 +16,9 @@ class UserInput
             Console.WriteLine("---------------------------");
             Console.WriteLine( "0 Exit");
             Console.WriteLine( "1 Manage Stacks");
-            //Console.WriteLine( "2 Manage FlashCards");
-            Console.WriteLine( "2 Study");
-            Console.WriteLine( "3 View Study session data");
+            Console.WriteLine( "2 Manage FlashCards");
+            Console.WriteLine( "3 Study");
+            Console.WriteLine( "4 View Study session data");
             Console.WriteLine("---------------------------");          
             validInput = true;
             string result = Console.ReadLine();
@@ -45,16 +45,16 @@ class UserInput
                 UserInput.StackMenu(selectedStack);  
                 break;
             
-            /*case "2":
+            case "2":
                 UserInput.FlashCardMenu();
                 break;
-            */
+            
             /*
             study session
             */
 
 
-            case "2":
+            case "3":
                 Console.Clear();
 
                 string stack = "";
@@ -91,7 +91,7 @@ class UserInput
                 }
                 break;
 
-            case "3":
+            case "4":
             //view sessions
             DBController.ViewAllSessions(connection,DBController.QuerySession(connection));
                 break;
