@@ -225,14 +225,15 @@ class UserInput
             
             case "Z":
                 Console.WriteLine($"{ Stack } stack is now deleted");
-                Console.WriteLine("All Flashcards in this stack are deleted");
+                Console.WriteLine("All Flashcards and Sessions in this stack are deleted");
                 Console.WriteLine("Please Confirm (Y/N)");
                 result = Console.ReadLine().ToUpper().Trim();
 
                 if (result == "Y")
                 {
                     DBController.DeleteStack(connection, Stack);
-                    Console.WriteLine("Stack its Flash cards deleted.");
+                    Console.WriteLine("The Stack and its Flash cards/Sessions are deleted.");
+                    
                 }
                 else
                 {

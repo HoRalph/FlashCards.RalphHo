@@ -107,6 +107,9 @@ class DBController
         int stackId = QueryStackID(connection,Name);
         //Delete all flashcards with the stackID
         DeleteFlashCardStacks(connection,stackId);
+        //Delete sessions with this stack
+        DeleteSessionStacks(connection,stackId);
+        
         //Delete the stack from stack table
         string  sqlString = @"DELETE FROM Stacks
                             WHERE ID = @Id;";
@@ -456,5 +459,20 @@ class DBController
         table.AddRow([model.Id.ToString(), model.Date, stackName, model.Score.ToString()]);
         }
         AnsiConsole.Write(table);
+    }
+
+    public static void DeleteSessionStacks(SqlConnection connection, int id)
+    {
+        string  sqlString = @"DELETE FROM Sessions
+                            WHERE StackId = @Id;";
+        connection.Open();
+        SqlCommand command = new SqlCommand(sqlString, connection);
+        using (command)
+        {
+            command.Parameters.AddWithValue("Id", id);
+            command.ExecuteNonQuery();
+        }
+            connection.Close();
+            return;
     }
 }

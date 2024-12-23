@@ -9,24 +9,6 @@ study session area:
     if a stack is deleted the session is deleted.
     need function to view all sesions
 
-Tables:
-1) flashcards
-    1)ID
-    2)word
-    3)definition
-    4)stack
-
-2) stacks
-    1) ID
-    2) stack name
-
-3) sessions
-    1) ID
-    2) Date
-    3) stack
-    4) score
-*id stack is deleted the Flashcards are deleted
-**if stack is deleted the session is deleted
 
 
 */
