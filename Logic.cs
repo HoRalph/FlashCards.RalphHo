@@ -1,5 +1,6 @@
 using System.Data.Common;
 using System.Security.Cryptography.X509Certificates;
+using Azure.Core.GeoJson;
 using Microsoft.Data.SqlClient;
 
 public static class Logic
@@ -48,15 +49,17 @@ public static class Logic
     public static void UpdateFlashCard()
     {
         //view all flash cards
-        DBController.ViewAllFlashCards(DBController.ConnectDB());
+        List<FlashCardDto> flashCardDtos = DBController.ViewAllFlashCards(DBController.ConnectDB());
         Console.WriteLine("Enter the ID of the Flashcard you want to edit");
+        int position = 0;
         int flashcardIDInt = 0;
         while (true)
         {
-            string flashcardID = Console.ReadLine();
-            bool validID = int.TryParse(flashcardID, out flashcardIDInt);
+            string flashcardID = Console.ReadLine().Trim();
+            bool validID = int.TryParse(flashcardID, out position);
             if (validID)
             {
+                flashcardIDInt = flashCardDtos.Where(x => x.Position == position).First().Id;
                 break;
             }
         }
@@ -95,23 +98,21 @@ public static class Logic
     public static void DeleteFlashCard()
     {
         //  view all flash cards
-        DBController.ViewAllFlashCards(DBController.ConnectDB());
+        List<FlashCardDto> FlashCardDto = DBController.ViewAllFlashCards(DBController.ConnectDB());
+        int position = 0;
         int flashcardID = 0;
         while (true)
         {
             Console.WriteLine("Enter the ID of the flashcard to delete");
-            bool validInt = int.TryParse(Console.ReadLine(), out flashcardID);
+            bool validInt = int.TryParse(Console.ReadLine().Trim(), out position);
             if (validInt)
                 {
+                    flashcardID = FlashCardDto.Where(x => x.Position == position).First().Id;
                     break;
                 }
         }
         DBController.DeleteFlashCard(DBController.ConnectDB(), flashcardID);
     }
-
-    
-
-    
 
     //Check if FlashCard Exists
     public static bool StackExists(string Stack)
